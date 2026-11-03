@@ -10,9 +10,10 @@ router.get("/sign-up", (req, res) => {
 });
 
 router.post("/sign-up", async (req, res) => {
-  const userInDatabase = await User.findOne({ username: req.body.username });
+  const email = (req.body.email || '').trim().toLowerCase();
+  const userInDatabase = await User.findOne({ email });
   if (userInDatabase) {
-    return res.send("Username already taken.");
+    return res.send("Email already registered.");
   }
 
   if (req.body.password !== req.body.confirmPassword) {
@@ -20,11 +21,11 @@ router.post("/sign-up", async (req, res) => {
   }
 
   const hashedPassword = bcrypt.hashSync(req.body.password, 10);
-  req.body.password = hashedPassword;
-
-  // validation logic
-
-  const user = await User.create(req.body);
+  await User.create({
+    name: req.body.name,
+    email,
+    password: hashedPassword
+  });
   res.redirect("/auth/sign-in");
 });
 
@@ -39,7 +40,8 @@ router.get("/sign-in", (req, res) => {
 
 router.post("/sign-in", async (req, res) => {
   // First, get the user from the database
-  const userInDatabase = await User.findOne({ username: req.body.username });
+  const email = (req.body.email || "").trim().toLowerCase();
+  const userInDatabase = await User.findOne({ email });
   if (!userInDatabase) {
     return res.send("Login failed. Please try again.");
   }
@@ -57,8 +59,9 @@ router.post("/sign-in", async (req, res) => {
   // Avoid storing the password, even in hashed format, in the session
   // If there is other data you want to save to `req.session.user`, do so here!
   req.session.user = {
-    username: userInDatabase.username,
-    _id: userInDatabase._id
+    _id: userInDatabase._id,
+    name: userInDatabase.name,
+    role: userInDatabase.role
   };
 
   res.redirect("/");
