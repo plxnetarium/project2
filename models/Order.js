@@ -3,24 +3,36 @@ const mongoose = require("mongoose");
 const orderSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   },
   status: {
-    type: String
+    type: String,
+    required: true,
+    trim: true,
+    default: 'Pending'
   },
   phone: {
-    type: Number
+    type: String,
+    required: true,
+    trim: true
   },
   deliveryAddress: {
-    type: String
+    type: String,
+    required: true,
+    trim: true
   },
   Total: {
-    type: Number
+    type: Number,
+    required: true,
+    min: 0
   },
-  item: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Product'
-  }],
+  item: {
+    type: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product'
+    }],
+  },
 
 }, {timestamps: true});
 
