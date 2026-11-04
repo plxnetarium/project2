@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= product.productName %> | Bluebell</title>
+</head>
+<body>
+  <%- include('./partials/navbar') %>
+  <a href="/product">Back to products</a>
+  <h1><%= product.productName %></h1>
+  <% const imageUrl = (product.imageUrl || '').trim(); %>
+  <% if (/^https?:\/\//i.test(imageUrl) || /^\/(?!\/)/.test(imageUrl)) { %>
+    <img src="<%= imageUrl %>" alt="<%= product.productName %>" width="200" />
+  <% } %>
+  <p>Category: <%= product.categoryName ? product.categoryName.categoryName : 'Uncategorised' %></p>
+  <p><%= product.description %></p>
+  <p>Price: BHD <%= product.price.toFixed(3) %></p>
+  <p>Stock: <%= product.stock %></p>
+
+  <% if (user && user.role === 'admin') { %>
+    <a href="/product/<%= product._id %>/edit">Edit product</a>
+    <form action="/product/<%= product._id %>?_method=DELETE" method="POST">
+      <label>
+        <input type="checkbox" required /> Confirm you want to delete this product
+      </label>
+      <button type="submit">Delete product</button>
+    </form>
+  <% } %>
+</body>
+</html>

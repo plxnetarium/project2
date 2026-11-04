@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Products | Bluebell</title>
+</head>
+<body>
+  <%- include('./partials/navbar') %>
+
+  <h1>Products</h1>
+
+  <% if (user && user.role === 'admin') { %>
+    <a href="/product/new">Add product</a>
+  <% } %>
+
+  <% if (products.length === 0) { %>
+    <p>No products yet.</p>
+  <% } else { %>
+    <% products.forEach((product) => { %>
+      <article>
+        <h2><a href="/product/<%= product._id %>"><%= product.productName %></a></h2>
+        <% const imageUrl = (product.imageUrl || '').trim(); %>
+        <% if (/^https?:\/\//i.test(imageUrl) || /^\/(?!\/)/.test(imageUrl)) { %>
+          <img src="<%= imageUrl %>" alt="<%= product.productName %>" width="200" />
+        <% } %>
+        <p>Category: <%= product.categoryName ? product.categoryName.categoryName : 'Uncategorised' %></p>
+        <p><%= product.description %></p>
+        <p>Price: BHD <%= product.price.toFixed(3) %></p>
+        <p><%= product.stock > 0 ? 'In stock' : 'Out of stock' %></p>
+      </article>
+    <% }) %>
+  <% } %>
+</body>
+</html>
