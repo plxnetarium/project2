@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Category | Bluebell</title>
+</head>
+<body>
+  <%- include('./partials/navbar') %>
+
+  <h1>Add a category</h1>
+  <a href="/admin">Back to admin dashboard</a>
+  <p>Create a category to use in the product form.</p>
+
+  <% if (error) { %>
+    <p role="alert"><%= error %></p>
+  <% } %>
+
+  <form action="/category" method="POST">
+    <label for="categoryName">Category name:</label>
+    <input type="text" id="categoryName" name="categoryName"
+      value="<%= categoryName %>" placeholder="For example, Laptops" required />
+    <button type="submit">Create category</button>
+  </form>
+
+  <a href="/product/new">Back to Add Product</a>
+</body>
+</html>

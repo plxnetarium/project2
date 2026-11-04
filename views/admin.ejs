@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | Bluebell</title>
+</head>
+<body>
+  <%- include('./partials/navbar') %>
+
+  <main>
+    <h1>Admin dashboard</h1>
+    <p>Manage your Bluebell product catalogue.</p>
+
+    <section>
+      <h2>Categories</h2>
+      <p>Create categories such as Laptops, Gaming, and Accessories.</p>
+      <a href="/category/new">Add category</a>
+    </section>
+
+    <section>
+      <h2>Products</h2>
+      <p>Add a product with its category, price, stock, and image.</p>
+      <a href="/product/new">Add product</a>
+    </section>
+  </main>
+</body>
+</html>
