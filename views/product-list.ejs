@@ -4,30 +4,41 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Products | Bluebell</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <%- include('./partials/navbar') %>
 
+  <div class="products-page">
+  <div class="products-heading">
   <h1>Products</h1>
 
   <% if (user && user.role === 'admin') { %>
     <a href="/product/new">Add product</a>
   <% } %>
+  </div>
 
   <% if (products.length === 0) { %>
     <p>No products yet.</p>
   <% } else { %>
+    <div class="products-grid">
     <% products.forEach((product) => { %>
-      <article>
+      <article class="product-card">
+        <div class="product-card-image">
         <% const imageUrl = (product.imageUrl || '').trim(); %>
         <% if (/^https?:\/\//i.test(imageUrl) || /^\/(?!\/)/.test(imageUrl)) { %>
           <img src="<%= imageUrl %>" alt="<%= product.productName %>" width="200" />
         <% } %>
+        </div>
+        <div class="product-card-info">
         <h2><a href="/product/<%= product._id %>"><%= product.productName %></a></h2>
-        <p>Price: BHD <%= product.price.toFixed(3) %></p>
-        <p><%= product.stock > 0 ? 'In stock' : 'Out of stock' %></p>
+        <p class="product-card-price">Price: BHD <%= product.price.toFixed(3) %></p>
+        <p class="product-card-stock"><%= product.stock > 0 ? 'In stock' : 'Out of stock' %></p>
+        </div>
       </article>
     <% }) %>
+    </div>
   <% } %>
+  </div>
 </body>
 </html>
