@@ -18,6 +18,7 @@ const indexController = require("./routes/index.routes.js");
 const productController = require("./routes/product.routes.js");
 const categoryController = require("./routes/category.routes.js");
 const adminController = require("./routes/admin.routes.js");
+const cartController = require("./routes/cart.routes.js");
 
 
 // Middleware
@@ -59,6 +60,7 @@ app.use('/',indexController)
 app.use('/product',productController)
 app.use('/category',categoryController)
 app.use('/admin',adminController)
+app.use('/cart',cartController)
 
 
 
