@@ -232,3 +232,86 @@
 .product-card-stock {
   color: #526078;
 }
+/* Sign in and Sign up Pages */
+.auth-page {
+  padding: 60px 20px;
+  font-family: Arial, sans-serif;
+  color: #14213d;
+}
+
+.auth-card {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 32px;
+  border: 1px solid #dce2eb;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.auth-card h1 {
+  margin: 0 0 12px;
+}
+
+.auth-description {
+  margin-bottom: 28px;
+  color: #526078;
+  line-height: 1.5;
+}
+
+.auth-field {
+  margin-bottom: 20px;
+}
+
+.auth-field label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.auth-field input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #aeb9ca;
+  border-radius: 6px;
+  color: #14213d;
+  font: inherit;
+}
+
+.auth-field input:focus {
+  outline: 2px solid #1455e8;
+  outline-offset: 2px;
+}
+
+.auth-form button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #1455e8;
+  color: white;
+  font: inherit;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.auth-form button:hover {
+  background-color: #103fb0;
+}
+
+.auth-form button:focus-visible,
+.auth-footer a:focus-visible {
+  outline: 2px solid #1455e8;
+  outline-offset: 3px;
+}
+
+.auth-footer {
+  margin-top: 24px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.auth-footer a {
+  color: #1455e8;
+}
+
