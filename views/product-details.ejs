@@ -4,28 +4,40 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title><%= product.productName %> | Bluebell</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <%- include('./partials/navbar') %>
+  <div class="product-page">
   <a href="/product">Back to products</a>
-  <h1><%= product.productName %></h1>
+  <div class="product-layout">
+  <div class="product-image">
   <% const imageUrl = (product.imageUrl || '').trim(); %>
   <% if (/^https?:\/\//i.test(imageUrl) || /^\/(?!\/)/.test(imageUrl)) { %>
     <img src="<%= imageUrl %>" alt="<%= product.productName %>" width="200" />
   <% } %>
-  <p>Category: <%= product.categoryName ? product.categoryName.categoryName : 'Uncategorised' %></p>
-  <p><%= product.description %></p>
-  <p>Price: BHD <%= product.price.toFixed(3) %></p>
+  </div>
+  <div class="product-info">
+  <h1><%= product.productName %></h1>
+  <p class="product-category">Category: <%= product.categoryName ? product.categoryName.categoryName : 'Uncategorised' %></p>
+  <p class="product-description"><%= product.description %></p>
+  <p class="product-price">Price: BHD <%= product.price.toFixed(3) %></p>
   <p>Stock: <%= product.stock %></p>
+  </div>
+  </div>
 
   <% if (user && user.role === 'admin') { %>
+    <div class="admin-controls">
+    <h2>Admin controls</h2>
     <a href="/product/<%= product._id %>/edit">Edit product</a>
     <form action="/product/<%= product._id %>?_method=DELETE" method="POST">
       <label>
         <input type="checkbox" required /> Confirm you want to delete this product
       </label>
-      <button type="submit">Delete product</button>
+      <button type="submit" class="delete-button">Delete product</button>
     </form>
+    </div>
   <% } %>
+  </div>
 </body>
 </html>
