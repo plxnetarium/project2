@@ -170,9 +170,24 @@
 }
 
 .product-card {
+  display: block;
   border: 1px solid #dce2eb;
   border-radius: 10px;
   overflow: hidden;
+}
+
+.products-page a.product-card {
+  color: #14213d;
+  text-decoration: none;
+}
+
+.product-card:hover {
+  border-color: #1455e8;
+}
+
+.product-card:focus-visible {
+  outline: 2px solid #1455e8;
+  outline-offset: 4px;
 }
 
 .product-card-image {
@@ -199,12 +214,12 @@
   font-size: 22px;
 }
 
-.product-card-info h2 a {
+.product-card-info h2 {
   color: #14213d;
   text-decoration: none;
 }
 
-.product-card-info h2 a:hover {
+.product-card:hover h2 {
   text-decoration: underline;
 }
 

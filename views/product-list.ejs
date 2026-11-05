@@ -23,7 +23,7 @@
   <% } else { %>
     <div class="products-grid">
     <% products.forEach((product) => { %>
-      <article class="product-card">
+      <a class="product-card" href="/product/<%= product._id %>" aria-label="View <%= product.productName %>">
         <div class="product-card-image">
         <% const imageUrl = (product.imageUrl || '').trim(); %>
         <% if (/^https?:\/\//i.test(imageUrl) || /^\/(?!\/)/.test(imageUrl)) { %>
@@ -31,11 +31,11 @@
         <% } %>
         </div>
         <div class="product-card-info">
-        <h2><a href="/product/<%= product._id %>"><%= product.productName %></a></h2>
+        <h2><%= product.productName %></h2>
         <p class="product-card-price">Price: BHD <%= product.price.toFixed(3) %></p>
         <p class="product-card-stock"><%= product.stock > 0 ? 'In stock' : 'Out of stock' %></p>
         </div>
-      </article>
+      </a>
     <% }) %>
     </div>
   <% } %>
