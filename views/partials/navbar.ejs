@@ -1,21 +1,23 @@
 <nav class="site-nav" aria-label="Main navigation">
   <div class="nav-inner">
-    <a class="nav-brand" href="/">Bluebell</a>
+    <a class="nav-brand" href="/">
+      <img src="/photos/logo.png" alt="Bluebell Computers home" class="nav-logo" width="44" height="44" />
+    </a>
     <div class="nav-links">
-    <a href="/product">Products</a>
-    <% if (user){ %>
-    <a href="/cart">Cart</a>
-    <% if (user.role === 'admin') { %>
-    <a href="/admin">Admin Dashboard</a>
-    <% } %>
-    <a class="nav-account" href="/auth/sign-out">Logout</a>
+      <a href="/product">Products</a>
+      <% if (user){ %>
+        <a href="/cart">Cart</a>
+        <% if (user.role==='admin' ) { %>
+          <a href="/admin">Admin Dashboard</a>
+          <% } %>
+            <a class="nav-account" href="/auth/sign-out">Logout</a>
 
-    <% } else{ %>
-    <a href="/auth/sign-up">Sign up</a>
-    <a class="nav-account" href="/auth/sign-in">Login</a>
-    
+            <% } else{ %>
+              <a href="/auth/sign-up">Sign up</a>
+              <a class="nav-account" href="/auth/sign-in">Login</a>
 
-    <% } %>
+
+              <% } %>
     </div>
   </div>
 </nav>

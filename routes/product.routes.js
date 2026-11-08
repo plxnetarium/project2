@@ -4,6 +4,7 @@ const Category = require("../models/Category.js");
 const Product = require("../models/Product.js");
 const isAdmin = require("../middleware/is-admin.js");
 const mongoose = require("mongoose");
+const { uploadProductPhoto, discardUploadedPhoto } = require("../middleware/upload-product-photo.js");
 
 router.param("id", (req, res, next, id) => {
     if (!mongoose.isObjectIdOrHexString(id)) {
@@ -27,7 +28,7 @@ router.get("/new", isAdmin, async (req, res) => {
     res.render("products.ejs", { categories });
 });
 
-router.post("/", isAdmin, async (req, res) => {
+router.post("/", isAdmin, uploadProductPhoto, async (req, res) => {
     try {
         await Product.create({
             productName: req.body.productName,
@@ -35,11 +36,12 @@ router.post("/", isAdmin, async (req, res) => {
             description: req.body.description,
             price: req.body.price,
             stock: req.body.stock,
-            imageUrl: req.body.imageUrl
+            imageUrl: req.file ? req.file.path : req.body.imageUrl
         });
 
         res.redirect("/product/new");
     } catch (error) {
+        await discardUploadedPhoto(req.file);
         console.error(error);
         res.status(400).send("Could not create product. Check your fields.");
     }
@@ -66,10 +68,14 @@ router.get("/:id", async (req, res, next) => {
     }
 });
 
-router.put("/:id", isAdmin, async (req, res, next) => {
+router.put("/:id", isAdmin, uploadProductPhoto, async (req, res, next) => {
     try {
         const product = await Product.findById(req.params.id);
-        if (!product) return res.status(404).send("Product not found.");
+        if (!product) {
+            await discardUploadedPhoto(req.file);
+            return res.status(404).send("Product not found.");
+        }
+        const previousImageUrl = product.imageUrl;
 
         product.set({
             productName: req.body.productName,
@@ -77,13 +83,16 @@ router.put("/:id", isAdmin, async (req, res, next) => {
             description: req.body.description,
             price: req.body.price,
             stock: req.body.stock,
-            imageUrl: req.body.imageUrl
+            imageUrl: req.file ? req.file.path : (req.body.imageUrl ?? previousImageUrl)
         });
 
         try {
             await product.save();
         } catch (error) {
             if (error.name !== "ValidationError") throw error;
+            await discardUploadedPhoto(req.file);
+            req.file = undefined;
+            product.imageUrl = previousImageUrl;
             const categories = await Category.find();
             return res.status(400).render("product-edit.ejs", {
                 product, categories, error: "Could not update product. Check your fields."
@@ -92,6 +101,7 @@ router.put("/:id", isAdmin, async (req, res, next) => {
 
         res.redirect(`/product/${product._id}`);
     } catch (error) {
+        await discardUploadedPhoto(req.file);
         next(error);
     }
 });

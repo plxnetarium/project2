@@ -15,7 +15,7 @@
   <% if (error) { %>
     <p role="alert"><%= error %></p>
   <% } %>
-  <form class="product-form" action="/product/<%= product._id %>?_method=PUT" method="POST">
+  <form class="product-form" action="/product/<%= product._id %>?_method=PUT" method="POST" enctype="multipart/form-data">
     <div class="form-field">
     <label for="productName">Product name:</label>
     <input type="text" id="productName" name="productName" value="<%= product.productName %>" required />
@@ -47,6 +47,8 @@
     </div>
 
     <div class="form-field">
+    <label for="photo">Replace photo (JPEG, PNG, or WebP, up to 5 MB):</label>
+    <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/webp" />
     <label for="imageUrl">Image URL:</label>
     <input type="text" id="imageUrl" name="imageUrl" value="<%= product.imageUrl %>" />
     </div>
