@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
     <nav>
-    <%- include('./partials/navbar') %>
+        <%- include('./partials/navbar') %>
     </nav>
-    
-    <h1>Welcome to my Website</h1>
-    <a href="/product">Browse products</a>
-    
+
+    <h1>Bluebell Computers</h1>
+    <h3>Lorem ipsum dolor sit amet consectetur adipisicing elit.</h3>
+    <form action="/product" method="GET">
+        <label for="searchInput">Search products</label>
+        <input type="search" id="searchInput" name="search" placeholder="Search by name or description" />
+        <button type="submit">Search</button>
+    </form>
+
 </body>
+
 </html>

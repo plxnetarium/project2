@@ -18,12 +18,17 @@
   <% } %>
   </div>
 
+  <label for="searchInput">Search products</label>
+  <input type="search" id="searchInput" placeholder="Search by name or description" />
+  <p id="noResults" hidden>No matching products.</p>
+
   <% if (products.length === 0) { %>
     <p>No products yet.</p>
   <% } else { %>
     <div class="products-grid">
     <% products.forEach((product) => { %>
-      <a class="product-card" href="/product/<%= product._id %>" aria-label="View <%= product.productName %>">
+      <a class="product-card" href="/product/<%= product._id %>" aria-label="View <%= product.productName %>"
+        data-name="<%= product.productName %>" data-description="<%= product.description || '' %>">
         <div class="product-card-image">
         <% const imageUrl = (product.imageUrl || '').trim(); %>
         <% if (/^https?:\/\//i.test(imageUrl) || /^\/(?!\/)/.test(imageUrl)) { %>
@@ -40,5 +45,30 @@
     </div>
   <% } %>
   </div>
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const noResults = document.getElementById('noResults');
+    const cards = document.querySelectorAll('.products-grid .product-card');
+
+    function filterProducts() {
+      const searchTerm = searchInput.value.trim().toLowerCase();
+      let matchCount = 0;
+
+      cards.forEach((card) => {
+        const name = card.dataset.name.toLowerCase();
+        const description = card.dataset.description.toLowerCase();
+        const matches = name.includes(searchTerm) || description.includes(searchTerm);
+
+        card.style.display = matches ? '' : 'none';
+        if (matches) matchCount++;
+      });
+
+      noResults.hidden = cards.length === 0 || matchCount > 0;
+    }
+
+    searchInput.value = new URLSearchParams(window.location.search).get('search') || '';
+    searchInput.addEventListener('input', filterProducts);
+    filterProducts();
+  </script>
 </body>
 </html>
