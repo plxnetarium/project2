@@ -53,5 +53,12 @@
     <% } %>
     <a class="d-inline-block mt-4" href="/product">Continue shopping</a>
   </main>
+  <% if (cartNotice) { %>
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+      <div class="toast show toast-instant cart-toast" role="status" aria-live="polite" aria-atomic="true">
+        <div class="toast-body"><%= cartNotice %></div>
+      </div>
+    </div>
+  <% } %>
 </body>
 </html>

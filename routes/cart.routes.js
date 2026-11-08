@@ -35,6 +35,7 @@ router.post("/", async (req, res, next) => {
       cart.push({ productId: id, quantity });
     }
     req.session.cart = cart;
+    req.session.cartNotice = "Product added to cart.";
     req.session.save((error) => {
       if (error) return next(error);
       res.redirect("/cart");
@@ -58,7 +59,9 @@ router.get("/", async (req, res, next) => {
     }
 
     const totalFils = items.reduce((sum, item) => sum + item.subtotalFils, 0);
-    res.render("cart.ejs", { items, totalFils });
+    const cartNotice = req.session.cartNotice;
+    delete req.session.cartNotice;
+    res.render("cart.ejs", { items, totalFils, cartNotice });
   } catch (error) {
     next(error);
   }

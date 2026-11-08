@@ -405,6 +405,14 @@
   color: #14213d;
 }
 
+.cart-toast {
+  animation: hide-cart-toast 0s 3.5s forwards;
+}
+
+@keyframes hide-cart-toast {
+  to { visibility: hidden; }
+}
+
 .cart-item + .cart-item {
   border-top: 1px solid #dce2eb;
 }
