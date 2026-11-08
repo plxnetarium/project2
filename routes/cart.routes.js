@@ -1,6 +1,9 @@
 const router = require("express").Router();
 const mongoose = require("mongoose");
 const Product = require("../models/Product.js");
+const isSignedIn = require("../middleware/is-signed-in.js");
+
+router.use(isSignedIn);
 
 router.post("/", async (req, res, next) => {
   try {

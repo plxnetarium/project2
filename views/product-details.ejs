@@ -23,6 +23,7 @@
   <p class="product-description"><%= product.description %></p>
   <p class="product-price">Price: BHD <%= product.price.toFixed(3) %></p>
   <p>Stock: <%= product.stock %></p>
+  <% if (user) { %>
   <form action="/cart" method="POST">
     <input type="hidden" name="productId" value="<%= product._id %>" />
     <label for="quantity">Quantity:</label>
@@ -30,6 +31,9 @@
       max="<%= product.stock %>" required />
     <button type="submit" <%= product.stock < 1 ? 'disabled' : '' %>>Add to cart</button>
   </form>
+  <% } else { %>
+    <p><a href="/auth/sign-in">Sign in</a> to add this product to your cart.</p>
+  <% } %>
   </div>
   </div>
 
