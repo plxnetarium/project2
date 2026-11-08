@@ -23,6 +23,9 @@ const cartController = require("./routes/cart.routes.js");
 
 // Middleware
 app.use(express.static('public')) // my app will serve all static files from public folder
+app.get('/css/bootstrap.min.css', (req, res) => {
+    res.sendFile('node_modules/bootstrap/dist/css/bootstrap.min.css', { root: __dirname });
+});
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'))
 app.use(methodOverride('_method'))

@@ -15,8 +15,11 @@ router.param("id", (req, res, next, id) => {
 
 router.get("/", async (req, res, next) => {
     try {
-        const products = await Product.find().populate("categoryName").sort({ createdAt: -1 });
-        res.render("product-list.ejs", { products });
+        const [products, categories] = await Promise.all([
+            Product.find().populate("categoryName").sort({ createdAt: -1 }),
+            Category.find().sort({ categoryName: 1 })
+        ]);
+        res.render("product-list.ejs", { products, categories });
     } catch (error) {
         next(error);
     }

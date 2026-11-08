@@ -322,13 +322,17 @@
 .home-hero {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
-  align-items: center;
-  gap: 40px;
+  place-items: center;
   padding: clamp(24px, 5vw, 72px);
   background: #e4edf8;
   color: #14213d;
   font-family: Arial, sans-serif;
+}
+
+.hero-copy {
+  width: 100%;
+  max-width: 760px;
+  text-align: center;
 }
 
 .hero-copy h1 {
@@ -345,7 +349,8 @@
 .hero-search {
   display: flex;
   gap: 8px;
-  margin: 24px 0 16px;
+  max-width: 540px;
+  margin: 24px auto 16px;
 }
 
 .hero-search input {
@@ -374,7 +379,7 @@
   object-fit: contain;
 }
 
-@media (max-width: 700px) {
+/* @media (max-width: 700px) {
   .home-hero {
     grid-template-columns: 1fr;
     gap: 24px;
@@ -383,7 +388,7 @@
   .hero-image {
     max-height: 35svh;
   }
-}
+} */
 
 /* navbar */
 .nav-logo {

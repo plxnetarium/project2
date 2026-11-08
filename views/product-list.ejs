@@ -1,15 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Products | Bluebell</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <%- include('./partials/navbar') %>
 
   <div class="products-page">
+  <nav class="nav nav-underline mb-3" aria-label="Product categories">
+    <button type="button" class="nav-link active" data-category="" aria-pressed="true">All products</button>
+    <% categories.forEach((category) => { %>
+      <button type="button" class="nav-link" data-category="<%= category._id %>" aria-pressed="false">
+        <%= category.categoryName %>
+      </button>
+    <% }) %>
+  </nav>
+
+  <div class="bg-light rounded p-3 mb-4">
+    <label for="searchInput" class="visually-hidden">Search products</label>
+    <input type="search" id="searchInput" class="form-control" placeholder="Search by name or description" />
+  </div>
+
   <div class="products-heading">
   <h1>Products</h1>
 
@@ -18,9 +33,7 @@
   <% } %>
   </div>
 
-  <label for="searchInput">Search products</label>
-  <input type="search" id="searchInput" placeholder="Search by name or description" />
-  <p id="noResults" hidden>No matching products.</p>
+  <p id="noResults" role="status" hidden>No matching products.</p>
 
   <% if (products.length === 0) { %>
     <p>No products yet.</p>
@@ -28,7 +41,8 @@
     <div class="products-grid">
     <% products.forEach((product) => { %>
       <a class="product-card" href="/product/<%= product._id %>" aria-label="View <%= product.productName %>"
-        data-name="<%= product.productName %>" data-description="<%= product.description || '' %>">
+        data-name="<%= product.productName %>" data-description="<%= product.description || '' %>"
+        data-category="<%= product.categoryName ? product.categoryName._id : '' %>">
         <div class="product-card-image">
         <% const imageUrl = (product.imageUrl || '').trim(); %>
         <% if (/^https?:\/\//i.test(imageUrl) || /^\/(?!\/)/.test(imageUrl)) { %>
@@ -49,6 +63,8 @@
     const searchInput = document.getElementById('searchInput');
     const noResults = document.getElementById('noResults');
     const cards = document.querySelectorAll('.products-grid .product-card');
+    const categoryButtons = document.querySelectorAll('button[data-category]');
+    let selectedCategory = '';
 
     function filterProducts() {
       const searchTerm = searchInput.value.trim().toLowerCase();
@@ -57,7 +73,9 @@
       cards.forEach((card) => {
         const name = card.dataset.name.toLowerCase();
         const description = card.dataset.description.toLowerCase();
-        const matches = name.includes(searchTerm) || description.includes(searchTerm);
+        const matchesSearch = name.includes(searchTerm) || description.includes(searchTerm);
+        const matchesCategory = !selectedCategory || card.dataset.category === selectedCategory;
+        const matches = matchesSearch && matchesCategory;
 
         card.style.display = matches ? '' : 'none';
         if (matches) matchCount++;
@@ -65,6 +83,18 @@
 
       noResults.hidden = cards.length === 0 || matchCount > 0;
     }
+
+    categoryButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        selectedCategory = button.dataset.category;
+        categoryButtons.forEach((categoryButton) => {
+          const isSelected = categoryButton === button;
+          categoryButton.classList.toggle('active', isSelected);
+          categoryButton.setAttribute('aria-pressed', String(isSelected));
+        });
+        filterProducts();
+      });
+    });
 
     searchInput.value = new URLSearchParams(window.location.search).get('search') || '';
     searchInput.addEventListener('input', filterProducts);
