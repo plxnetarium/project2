@@ -8,18 +8,26 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body>
-    <nav>
-        <%- include('./partials/navbar') %>
-    </nav>
+<body class="home-page">
+    <%- include('./partials/navbar') %>
 
-    <h1>Bluebell Computers</h1>
-    <h3>Lorem ipsum dolor sit amet consectetur adipisicing elit.</h3>
-    <form action="/product" method="GET">
-        <label for="searchInput">Search products</label>
-        <input type="search" id="searchInput" name="search" placeholder="Search by name or description" />
-        <button type="submit">Search</button>
-    </form>
+    <main class="home-hero">
+        <div class="hero-copy">
+            <h1>Find your next upgrade.</h1>
+            <p>Computers and accessories for work, study, and play.</p>
+
+            <form class="hero-search" action="/product" method="GET">
+                <input type="search" id="searchInput" name="search"
+                    aria-label="Search products by name or description"
+                    placeholder="Search by name or description" />
+                <button type="submit">Search</button>
+            </form>
+
+            <a href="/product">Browse all products</a>
+        </div>
+
+        <%# Add the hero image here when its file is in public/photos. %>
+    </main>
 
 </body>
 
