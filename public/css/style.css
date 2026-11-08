@@ -395,3 +395,27 @@
   display: block;
   object-fit: contain;
 }
+
+.cart-page {
+  color: #14213d;
+}
+
+.cart-item + .cart-item {
+  border-top: 1px solid #dce2eb;
+}
+
+.cart-thumbnail {
+  width: 88px;
+  height: 72px;
+  object-fit: contain;
+  background: #f1f4f8;
+}
+
+.cart-summary {
+  background: #e4edf8;
+}
+
+.cart-page a,
+.cart-summary strong {
+  color: #1455e8;
+}
