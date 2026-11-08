@@ -396,6 +396,11 @@
   object-fit: contain;
 }
 
+.edit-product-content {
+  max-width: 760px;
+  color: #14213d;
+}
+
 .cart-page {
   color: #14213d;
 }
