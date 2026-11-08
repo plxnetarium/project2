@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User.js");
 const bcrypt = require("bcrypt");
+const { body, validationResult } = require("express-validator");
 
 
 // Sign up routes
@@ -9,7 +10,12 @@ router.get("/sign-up", (req, res) => {
   res.render("auth/sign-up.ejs");
 });
 
-router.post("/sign-up", async (req, res) => {
+router.post("/sign-up", body("email").isString().bail().trim().isEmail()
+  .withMessage("Enter a valid email address."), async (req, res) => {
+  if (!validationResult(req).isEmpty()) {
+    return res.status(400).send("Enter a valid email address.");
+  }
+
   const email = (req.body.email || '').trim().toLowerCase();
   const userInDatabase = await User.findOne({ email });
   if (userInDatabase) {
