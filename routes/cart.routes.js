@@ -45,6 +45,16 @@ router.post("/", async (req, res, next) => {
   }
 });
 
+router.delete("/:productId", (req, res, next) => {
+  const cart = req.session.cart || [];
+  req.session.cart = cart.filter((item) => item.productId !== req.params.productId);
+
+  req.session.save((error) => {
+    if (error) return next(error);
+    res.redirect("/cart");
+  });
+});
+
 router.get("/", async (req, res, next) => {
   try {
     const cart = req.session.cart || [];
