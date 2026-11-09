@@ -2,7 +2,6 @@ const router = require("express").Router();
 const Category = require("../models/Category.js");
 const isAdmin = require("../middleware/is-admin.js");
 
-// Protect both the form and submissions, including direct requests.
 router.use(isAdmin);
 
 router.get("/new", (req, res) => {
