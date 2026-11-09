@@ -27,7 +27,9 @@ app.get('/css/bootstrap.min.css', (req, res) => {
     res.sendFile('node_modules/bootstrap/dist/css/bootstrap.min.css', { root: __dirname });
 });
 app.use(express.urlencoded({ extended: false }));
-app.use(morgan('dev'))
+app.use(morgan('dev', {
+    skip: (req) => /^\/auth\/reset-password\/?$/i.test(req.path)
+}))
 app.use(methodOverride('_method'))
 app.use(
   session({
