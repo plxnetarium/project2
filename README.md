@@ -2,61 +2,52 @@
 
 ## Overview
 
-Bluebell is an electronics ecommerce project inspired by Bluebell in Bahrain. Customers will be able to browse products, view product details, and place orders. Store administrators will manage the product catalogue with full create, read, update, and delete (CRUD) functionality.
+Bluebell is an educational ecommerce project inspired by Bluebell Computers in Bahrain. Visitors can search and filter the catalogue, view product details, and see prices in Bahraini dinars (BHD). Signed-in customers can add and remove items from their cart. Administrators can manage products and categories and review stock levels from a dashboard.
 
-The application uses Node.js, Express, EJS, and MongoDB, with HTML, CSS, and JavaScript for a responsive storefront. Prices will be displayed in Bahraini dinars (BHD).
-
-This README describes the project plan. The current code includes a homepage and basic registration, sign-in, and sign-out routes. Product management, orders, and final styling are planned work.
+The cart is implemented. Checkout, order placement, and order history are planned.
 
 ## Screenshots
 
-Storefront screenshots will be added when the interface is implemented. The approved ERD appears under Database Design below.
+Storefront and dashboard screenshots are pending. The approved ERD is included under [Database Design](#database-design).
 
 ## Technologies Used
 
-- **Node.js and Express:** Server and application routes.
-- **EJS:** Server-rendered templates and reusable partials.
-- **HTML, CSS, and JavaScript:** Page structure, responsive styling, and browser interactions.
-- **MongoDB and Mongoose:** Database storage and models.
-- **bcrypt:** Password hashing.
-- **express-session and connect-mongo:** Sessions stored in MongoDB.
-- **method-override:** Update and delete requests from HTML forms.
-- **dotenv:** Environment variable configuration.
-- **Morgan:** HTTP request logging.
+| Technology | Purpose |
+| --- | --- |
+| Node.js, Express, and EJS | Server, routes, and rendered pages |
+| HTML, CSS, JavaScript, and Bootstrap | Layout, styling, and catalogue filters |
+| MongoDB and Mongoose | Application data and models |
+| express-session and connect-mongo | Session and cart storage |
+| bcrypt and express-validator | Password hashing and sign-up email validation |
+| Nodemailer | Email confirmation and password reset |
+| Multer, multer-storage-cloudinary, and Cloudinary | Product photo uploads |
+| Chart.js | Admin inventory bar chart |
 
 ## Getting Started
 
-### Prerequisites
+1. Clone the repository and open its directory. You’ll need Node.js, npm, and a local or hosted MongoDB database.
+2. Run `npm install`.
+3. Create a `.env` file in the project root using the example below. Use your own values and keep `.env` private.
+4. Run `npm start` and visit [http://localhost:3000](http://localhost:3000).
 
-- Node.js and npm.
-- A local MongoDB instance or MongoDB Atlas connection string.
+```env
+PORT=3000
+APP_BASE_URL=http://localhost:3000
+MONGODB_URI=mongodb://127.0.0.1:27017/bluebell
+SESSION_SECRET=replace-with-a-long-random-secret
 
-### Local Setup
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=your-smtp-username
+SMTP_PASS=your-smtp-password
+MAIL_FROM="Bluebell Computers <sender@example.com>"
 
-1. Clone this repository and open its directory in your terminal.
-2. Install dependencies:
+CLOUDINARY_URL=cloudinary://API_KEY:API_SECRET@CLOUD_NAME
+```
 
-   ```bash
-   npm install
-   ```
+Set up SMTP to test email confirmation and password reset. If you use Ethereal, open the message in its test inbox. Set `APP_BASE_URL` to your public HTTPS address when deployed so email links point to the deployed app. Cloudinary credentials are needed for uploading photos from a file. You can also enter an image URL in the product form.
 
-3. Create a `.env` file in the project root:
-
-   ```env
-   MONGODB_URI=mongodb://127.0.0.1:27017/bluebell
-   SESSION_SECRET=replace-with-a-long-random-secret
-   PORT=3000
-   ```
-
-4. Start the application:
-
-   ```bash
-   npm start
-   ```
-
-5. Visit [http://localhost:3000](http://localhost:3000).
-
-The `npm run dev` command supports automatic restarts if nodemon is installed in your development environment. Automated tests are not currently configured.
+To try the admin dashboard locally, sign up, confirm your email, and set your test account’s `role` to `"admin"` in MongoDB. Sign out and sign back in, open `/admin`, and add a category before creating your first product.
 
 ## User Stories
 
@@ -69,88 +60,57 @@ The `npm run dev` command supports automatic restarts if nodemon is installed in
 7. As a store administrator, I want to update product information, prices, and stock so that listings stay accurate.
 8. As a store administrator, I want to delete product listings so that products no longer offered can be removed from the catalogue.
 
-## Database Design
+Order placement and history in stories 1, 4, and 5 describe the planned checkout flow.
 
-The approved ERD contains four models: **User, Category, Product, and Order**.
+## Database Design
 
 ![Approved Bluebell entity relationship diagram](public/photos/ERD.jpg)
 
 | Model | Purpose |
 | --- | --- |
-| User | Stores account information and identifies the customer placing an order. |
-| Category | Organises products into categories. |
-| Product | Stores product names, descriptions, prices, stock, images, and category references. |
-| Order | Stores the customer reference, product references, status, phone number, delivery address, and total. |
+| User | Stores the customer’s name, email, hashed password, role, and email verification and reset data. |
+| Category | Groups products by category. |
+| Product | Stores the name, description, price, stock, image URL, and category reference. |
+| Order | Defines the customer and product references, status, phone, delivery address, and total for planned checkout. |
 
-### Relationships
-
-- A user can place multiple orders.
-- A category can contain multiple products.
-- An order references products through its `item` array, as shown in the approved ERD.
-
-The diagram represents the approved target design. The existing User schema currently uses `username` and `password`; the other models are planned.
+Each product references one category. An order references one user and stores product references in its `item` array. The cart lives in the MongoDB-backed Express session as product IDs and quantities. The `sessions` collection is managed by connect-mongo.
 
 ## Routes
 
-### Existing Routes
-
-| Method | Route | Description |
-| --- | --- | --- |
-| GET | `/` | Display the homepage. |
-| GET | `/auth/sign-up` | Display the registration form. |
-| POST | `/auth/sign-up` | Create an account. |
-| GET | `/auth/sign-in` | Display the sign-in form. |
-| POST | `/auth/sign-in` | Authenticate a user and create a session. |
-| GET | `/auth/sign-out` | End the user session. |
-
-### Planned Routes
-
-Product management will be restricted to store administrators. Order routes will require authentication, and customers will only be able to access their own orders.
-
-| Method | Route | Description |
-| --- | --- | --- |
-| GET | `/products` | Browse products, with optional category filtering. |
-| GET | `/products/new` | Display the new product form. |
-| POST | `/products` | Create a product. |
-| GET | `/products/:id` | Display product details. |
-| GET | `/products/:id/edit` | Display the product editing form. |
-| PUT | `/products/:id` | Update a product. |
-| DELETE | `/products/:id` | Delete a product. |
-| GET | `/orders` | Display the signed-in customer's orders. |
-| GET | `/orders/new` | Display the order form. |
-| POST | `/orders` | Create an order. |
-| GET | `/orders/:id` | Display an order and its status. |
+| Method | Route | Access | Purpose |
+| --- | --- | --- | --- |
+| GET | `/` | Public | Homepage and catalogue search |
+| GET | `/product` | Public | Product listing with search and category filters |
+| GET | `/product/:id` | Public | Product details |
+| GET / POST | `/auth/sign-up` | Public | Show registration and create an account |
+| GET / POST | `/auth/verify-email` | Confirmation link | Show the confirmation form and verify the email |
+| GET / POST | `/auth/sign-in` | Public | Show sign-in and authenticate the user |
+| GET | `/auth/sign-out` | Public | End the current session |
+| GET / POST | `/auth/forgot-password` | Public | Show the form and request a password reset link |
+| GET / POST | `/auth/reset-password` | Reset link | Show the form and save a new password |
+| GET / POST | `/cart` | Signed in | View the cart or add a product |
+| DELETE | `/cart/:productId` | Signed in | Remove a product from the cart |
+| GET | `/admin` | Admin | Catalogue counts, inventory chart, and product table |
+| GET / POST | `/category/new` / `/category` | Admin | Show the form and create a category |
+| GET / POST | `/product/new` / `/product` | Admin | Show the form and create a product |
+| GET | `/product/:id/edit` | Admin | Show the product editing form |
+| PUT / DELETE | `/product/:id` | Admin | Update or delete a product |
 
 ## Features
 
-### Current Foundation
-
-- Basic registration and sign-in with username and password.
-- Password hashing with bcrypt.
-- Session-based authentication with MongoDB session storage.
-- EJS homepage and authentication templates.
-
-### Planned MVP
-
-- Responsive electronics storefront styled for Bluebell.
-- Product listings, category browsing, and individual product pages.
-- Full CRUD functionality for the Product model.
-- Protected product management for store administrators.
-- Order placement with contact and delivery information.
-- Customer order history and status display.
-- Prices displayed in BHD.
+- Search product names and descriptions, filter by category, and open product detail pages.
+- Register with email confirmation, sign in, sign out, and request a password reset.
+- Add or remove cart items, with stock checks, quantities, and BHD totals.
+- Create, view, edit, and delete products. Upload photos to Cloudinary or enter image URLs.
+- Create categories and manage the catalogue from the admin dashboard, which shows a stock breakdown in a Chart.js bar chart.
 
 ## Future Enhancements
 
-- Product search and price sorting.
-- Persistent shopping cart.
-- Product reviews and ratings.
-- Wishlists.
-- English and Arabic interfaces.
-- Online payment integration.
-- Order confirmation emails.
+- Checkout with delivery details, order confirmation, and order history.
+- Cart quantity editing and a cart that persists across sessions.
+- Price sorting, product reviews, and wishlists.
+- English and Arabic interfaces and online payment integration.
 
 ## Credits
 
-- **Inspiration:** Bluebell, Bahrain. This is an educational project and does not claim official affiliation with the store.
-- **Planning:** The approved ERD is included in this repository.
+Inspired by Bluebell Computers in Bahrain. This project was built for educational purposes.
