@@ -26,6 +26,9 @@ app.use(express.static('public')) // my app will serve all static files from pub
 app.get('/css/bootstrap.min.css', (req, res) => {
     res.sendFile('node_modules/bootstrap/dist/css/bootstrap.min.css', { root: __dirname });
 });
+app.get('/js/chart.umd.min.js', (req, res) => {
+    res.sendFile('node_modules/chart.js/dist/chart.umd.min.js', { root: __dirname });
+});
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev', {
     skip: (req) => /^\/auth\/(reset-password|verify-email)\/?$/i.test(req.path)

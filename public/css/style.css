@@ -413,6 +413,11 @@
   object-fit: contain;
 }
 
+.inventory-chart {
+  max-width: 240px;
+  margin: 0 auto;
+}
+
 .edit-product-content {
   max-width: 760px;
   color: #14213d;

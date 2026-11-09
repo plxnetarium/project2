@@ -22,6 +22,8 @@
       </div>
     </header>
 
+    <div class="row g-4 align-items-start">
+      <div class="col-12<%= products.length > 0 ? ' col-lg-8' : '' %>">
     <dl class="row row-cols-1 row-cols-sm-3 g-3 mb-4">
       <div class="col"><div class="bg-light rounded border p-3">
         <dt>Products</dt><dd class="fs-3 fw-bold mb-0"><%= products.length %></dd>
@@ -34,45 +36,82 @@
       </div></div>
     </dl>
 
-    <section aria-labelledby="dashboard-products">
-      <h2 id="dashboard-products" class="h4 fw-bold mb-3">Products</h2>
-      <% if (products.length === 0) { %>
-        <p class="border rounded p-4">No products yet. <a href="/product/new">Add your first product</a>.</p>
-      <% } else { %>
-        <div class="table-responsive border rounded" tabindex="0" role="region" aria-label="Product inventory">
-          <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
-              <tr>
-                <th scope="col">Product</th>
-                <th scope="col">Category</th>
-                <th scope="col">Price</th>
-                <th scope="col">Stock</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% products.forEach((product) => { %>
-                <% const imageUrl = (product.imageUrl || '').trim(); %>
+      <section aria-labelledby="dashboard-products">
+        <h2 id="dashboard-products" class="h4 fw-bold mb-3">Products</h2>
+        <% if (products.length === 0) { %>
+          <p class="border rounded p-4">No products yet. <a href="/product/new">Add your first product</a>.</p>
+        <% } else { %>
+          <div class="table-responsive border rounded" tabindex="0" role="region" aria-label="Product inventory">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
                 <tr>
-                  <th scope="row">
-                    <div class="d-flex align-items-center gap-2">
-                      <% if (/^https?:\/\//i.test(imageUrl) || /^\/(?!\/)/.test(imageUrl)) { %>
-                        <img class="rounded object-fit-contain" src="<%= imageUrl %>" alt="" width="48" height="48" loading="lazy" />
-                      <% } %>
-                      <a href="/product/<%= product._id %>"><%= product.productName %></a>
-                    </div>
-                  </th>
-                  <td><%= product.categoryName?.categoryName || 'Uncategorised' %></td>
-                  <td class="text-nowrap">BHD <%= product.price.toFixed(3) %></td>
-                  <td><%= product.stock > 0 ? product.stock : 'Out of stock' %></td>
-                  <td><a class="btn btn-sm btn-outline-primary" href="/product/<%= product._id %>/edit" aria-label="Edit <%= product.productName %>">Edit</a></td>
+                  <th scope="col">Product</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">Stock</th>
+                  <th scope="col">Actions</th>
                 </tr>
-              <% }) %>
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                <% products.forEach((product) => { %>
+                  <% const imageUrl = (product.imageUrl || '').trim(); %>
+                  <tr>
+                    <th scope="row">
+                      <div class="d-flex align-items-center gap-2">
+                        <% if (/^https?:\/\//i.test(imageUrl) || /^\/(?!\/)/.test(imageUrl)) { %>
+                          <img class="rounded object-fit-contain" src="<%= imageUrl %>" alt="" width="48" height="48" loading="lazy" />
+                        <% } %>
+                        <a href="/product/<%= product._id %>"><%= product.productName %></a>
+                      </div>
+                    </th>
+                    <td><%= product.categoryName?.categoryName || 'Uncategorised' %></td>
+                    <td class="text-nowrap">BHD <%= product.price.toFixed(3) %></td>
+                    <td><%= product.stock > 0 ? product.stock : 'Out of stock' %></td>
+                    <td><a class="btn btn-sm btn-outline-primary" href="/product/<%= product._id %>/edit" aria-label="Edit <%= product.productName %>">Edit</a></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </section>
+      </div>
+
+      <% if (products.length > 0) { %>
+        <% const inStockCount = products.length - outOfStockCount; %>
+        <section class="col-12 col-lg-4" aria-labelledby="inventory-heading">
+          <div class="bg-white border rounded-3 p-4">
+          <h2 id="inventory-heading" class="h4 fw-bold">Inventory breakdown</h2>
+          <p class="text-body-secondary">Product listings by stock status</p>
+
+          <div class="d-flex flex-column gap-3">
+            <div class="w-100">
+              <div class="inventory-chart">
+                <canvas id="inventoryChart" role="img"
+                  aria-label="<%= inStockCount %> products in stock, <%= outOfStockCount %> out of stock"
+                  data-in-stock="<%= inStockCount %>"
+                  data-out-of-stock="<%= outOfStockCount %>"></canvas>
+              </div>
+            </div>
+            <div>
+              <dl class="row row-cols-2 mb-0">
+                <div class="col">
+                <dt>In stock</dt>
+                <dd class="fs-4 fw-bold text-primary"><%= inStockCount %></dd>
+                </div>
+                <div class="col">
+                <dt>Out of stock</dt>
+                <dd class="fs-4 fw-bold mb-0"><%= outOfStockCount %></dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+          </div>
+        </section>
+        <script src="/js/chart.umd.min.js" defer></script>
+        <script src="/js/admin-chart.js" defer></script>
       <% } %>
-    </section>
+    </div>
   </main>
 </body>
 </html>
