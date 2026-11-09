@@ -18,6 +18,77 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+async function sendVerificationEmail(user) {
+  const token = crypto.randomBytes(32).toString("hex");
+  const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+  const link = new URL("/auth/verify-email", process.env.APP_BASE_URL);
+  link.searchParams.set("token", token);
+  const now = Date.now();
+  const lifetime = 60 * 60 * 1000;
+  const result = await User.updateOne({
+    _id: user._id,
+    emailVerified: false,
+    $or: [
+      { emailVerificationExpiresAt: { $exists: false } },
+      { emailVerificationExpiresAt: { $lte: new Date(now + lifetime - 60000) } }
+    ]
+  }, {
+    $set: {
+      emailVerificationTokenHash: tokenHash,
+      emailVerificationExpiresAt: new Date(now + lifetime)
+    }
+  });
+  if (result.matchedCount === 0) return "Check your inbox for the link already requested.";
+
+  try {
+    await transporter.sendMail({
+      from: process.env.MAIL_FROM,
+      to: user.email,
+      subject: "Confirm your Bluebell email address",
+      text: `Open this link to confirm your email address. It expires in one hour: ${link}`
+    });
+    return "Check your inbox for a link to confirm your email address.";
+  } catch {
+    await User.updateOne({ _id: user._id, emailVerificationTokenHash: tokenHash }, {
+      $unset: { emailVerificationTokenHash: "", emailVerificationExpiresAt: "" }
+    });
+    return "We couldn't send the confirmation email. Try signing in to request a new link.";
+  }
+}
+
+router.use("/verify-email", (req, res, next) => {
+  res.set("Referrer-Policy", "no-referrer");
+  res.set("Cache-Control", "no-store");
+  next();
+});
+
+router.get("/verify-email", (req, res) => {
+  const token = isResetToken(req.query.token) ? req.query.token : null;
+  res.status(token ? 200 : 400).render("auth/verify-email.ejs", {
+    token, message: token ? "Confirm your email to finish setting up your account." : "This link is invalid. Sign in to request a new one."
+  });
+});
+
+router.post("/verify-email", async (req, res) => {
+  const token = req.body?.token;
+  let verified = false;
+  if (isResetToken(token)) {
+    const result = await User.updateOne({
+      emailVerified: false,
+      emailVerificationTokenHash: crypto.createHash("sha256").update(token).digest("hex"),
+      emailVerificationExpiresAt: { $gt: new Date() }
+    }, {
+      $set: { emailVerified: true },
+      $unset: { emailVerificationTokenHash: "", emailVerificationExpiresAt: "" }
+    });
+    verified = result.matchedCount > 0;
+  }
+  res.status(verified ? 200 : 400).render("auth/verify-email.ejs", {
+    token: null,
+    message: verified ? "Email confirmed. You can now sign in." : "This link is invalid or expired. Sign in to request a new one."
+  });
+});
+
 // Sign up routes
 router.get("/sign-up", (req, res) => {
   res.render("auth/sign-up.ejs");
@@ -40,12 +111,14 @@ router.post("/sign-up", body("email").isString().bail().trim().isEmail()
     }
 
     const hashedPassword = bcrypt.hashSync(req.body.password, 10);
-    await User.create({
+    const user = await User.create({
       name: req.body.name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      emailVerified: false
     });
-    res.redirect("/auth/sign-in");
+    const message = await sendVerificationEmail(user);
+    res.render("auth/verify-email.ejs", { token: null, message });
   });
 
 
@@ -72,6 +145,11 @@ router.post("/sign-in", async (req, res) => {
   );
   if (!validPassword) {
     return res.send("Login failed. Please try again.");
+  }
+
+  if (userInDatabase.emailVerified === false) {
+    const message = await sendVerificationEmail(userInDatabase);
+    return res.render("auth/verify-email.ejs", { token: null, message });
   }
 
   // There is a user AND they had the correct password. Time to make a session!

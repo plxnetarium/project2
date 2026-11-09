@@ -65,6 +65,7 @@
   font-family: Arial, sans-serif;
   color: #14213d;
 }
+
 .product-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -72,6 +73,7 @@
   gap: 48px;
   margin-top: 24px;
 }
+
 .product-image {
   display: flex;
   align-items: center;
@@ -174,6 +176,7 @@
   border: 1px solid #dce2eb;
   border-radius: 10px;
   overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .products-page a.product-card {
@@ -183,6 +186,19 @@
 
 .product-card:hover {
   border-color: #1455e8;
+  box-shadow: 0 10px 25px rgba(58, 36, 24, 0.2);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .product-card:hover {
+    transform: translateY(-8px) scale(1.02);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-card {
+    transition: none;
+  }
 }
 
 .product-card:focus-visible {
@@ -232,6 +248,7 @@
 .product-card-stock {
   color: #526078;
 }
+
 /* Sign in and Sign up Pages */
 .auth-page {
   padding: 60px 20px;
@@ -410,7 +427,9 @@
 }
 
 @keyframes hide-toast {
-  to { visibility: hidden; }
+  to {
+    visibility: hidden;
+  }
 }
 
 .reset-toast {
@@ -434,7 +453,7 @@
   line-height: 1.5;
 }
 
-.cart-item + .cart-item {
+.cart-item+.cart-item {
   border-top: 1px solid #dce2eb;
 }
 
@@ -452,4 +471,15 @@
 .cart-page a,
 .cart-summary strong {
   color: #1455e8;
+}
+
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* the transform first have the card move -8px on the y axsis and then scale it 1.02 bigger */
+/* Add a box shadow when hover as well */
+.card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(58, 36, 24, 0.2);
 }

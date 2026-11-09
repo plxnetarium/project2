@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Confirm Email | Bluebell</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+  <main class="auth-page">
+    <div class="auth-card">
+      <h1>Confirm your email</h1>
+      <p class="auth-description" role="status"><%= message %></p>
+      <% if (token) { %>
+        <form class="auth-form" action="/auth/verify-email" method="POST">
+          <input type="hidden" name="token" value="<%= token %>" />
+          <button type="submit">Confirm email</button>
+        </form>
+      <% } %>
+      <p class="auth-footer"><a href="/auth/sign-in">Go to sign in</a></p>
+    </div>
+  </main>
+</body>
+</html>

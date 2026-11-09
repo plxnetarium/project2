@@ -28,7 +28,7 @@ app.get('/css/bootstrap.min.css', (req, res) => {
 });
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev', {
-    skip: (req) => /^\/auth\/reset-password\/?$/i.test(req.path)
+    skip: (req) => /^\/auth\/(reset-password|verify-email)\/?$/i.test(req.path)
 }))
 app.use(methodOverride('_method'))
 app.use(
